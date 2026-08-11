@@ -1,3 +1,6 @@
+// > javac MiniBank.java Account.java Customer.java
+// > java MiniBank.java
+
 package clg.Bank;
 import java.util.Scanner;
 
@@ -37,6 +40,12 @@ public class MiniBank {
             System.out.println("Acount holder name : " + account.getOwnerName());
             System.out.println("Account Balance : " + account.getBalance());
         }
+
+        //p3
+        System.out.println("\nChecking if acc[0] and acc[1] is equal : " + acc[0].equals(acc[1]));
+
+        if(acc[0] instanceof Account)
+            System.out.println("acc[0] ia an Account");
 
         //p1
         int choice = 0;
