@@ -1,4 +1,4 @@
-// > javac MiniBank.java Account.java Customer.java
+// > javac MiniBank.java Account.java Customer.java Command.java CommandParser.java StatementFormatter.java TransactionType.java Validator.java
 // > java MiniBank.java
 
 package clg.Bank;
@@ -21,6 +21,34 @@ public class MiniBank {
     {
         Scanner cin =  new Scanner(System.in);
 
+        // P4: Check Validator
+
+        System.out.println("\n-------- Checking Validators --------");
+
+        System.out.println("Mobile 9988776655 : "
+                + (Validator.isValidMobile("9988776655") ? "Valid" : "Invalid"));
+
+        System.out.println("Mobile 998877665 : "
+                + (Validator.isValidMobile("998877665") ? "Valid" : "Invalid"));
+
+        System.out.println("Email abc@gmail.com : "
+                + (Validator.isValidEmail("abc@gmail.com") ? "Valid" : "Invalid"));
+
+        System.out.println("Email abc@gmail : "
+                + (Validator.isValidEmail("abc@gmail") ? "Valid" : "Invalid"));
+
+        System.out.println("PAN BCDPA5678K : "
+                + (Validator.isValidPan("BCDPA5678K") ? "Valid" : "Invalid"));
+
+        System.out.println("PAN BCD5678 : "
+                + (Validator.isValidPan("BCD5678") ? "Valid" : "Invalid"));
+
+        System.out.println("IFSC HDFC0005678 : "
+                + (Validator.isValidIfsc("HDFC0005678") ? "Valid" : "Invalid"));
+
+        System.out.println("IFSC HDFC567 : "
+                + (Validator.isValidIfsc("HDFC567") ? "Valid" : "Invalid"));
+
         //p2
         Account acc[] = new Account[2];
 
@@ -28,24 +56,28 @@ public class MiniBank {
         acc[1] = new Account("Diya");
 
         System.out.println("Withdrawing 200 from acc[0] ...");
-        acc[0].Withdraw(200);
+        acc[0].withdraw(200);
         System.out.println("Depositing 1000 into acc[1] ...");
-        acc[1].Deposit(1000);
+        acc[1].deposit(1000);
 
         System.out.println("Checking...");
         for(Account account : acc)
         {
-            System.out.println("---");
-            System.out.println("Account number : " + account.getAccountNumber());
-            System.out.println("Acount holder name : " + account.getOwnerName());
-            System.out.println("Account Balance : " + account.getBalance());
+            //p2
+            // System.out.println("---");
+            // System.out.println("Account number : " + account.getAccountNumber());
+            // System.out.println("Acount holder name : " + account.getOwnerName());
+            // System.out.println("Account Balance : " + account.getBalance());
+
+            //p3
+            System.out.println(account);
         }
 
         //p3
         System.out.println("\nChecking if acc[0] and acc[1] is equal : " + acc[0].equals(acc[1]));
 
         if(acc[0] instanceof Account)
-            System.out.println("acc[0] ia an Account");
+            System.out.println("acc[0] is an Account");
 
         //p1
         int choice = 0;

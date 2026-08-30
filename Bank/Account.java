@@ -30,13 +30,13 @@ public class Account {
         return accNo;
     }
 
-    public void Deposit(int amount)
+    public void deposit(int amount)
     {
         if(amount > 0)
             balance += amount;
     }
     
-    public boolean Withdraw(long amount)
+    public boolean withdraw(long amount)
     {
         if(amount <= balance && amount > 0)
         {
@@ -83,7 +83,7 @@ public class Account {
 
         Account a = (Account) obj;
 
-        return this.accountNumber == a.accountNumber &&
+        return this.accountNumber.equals(a.accountNumber) &&
                 this.ownerName == a.ownerName &&
                 this.balance == a.balance;
     }

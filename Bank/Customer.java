@@ -60,6 +60,7 @@ public class Customer implements Cloneable{
         
     }
 
+    //customer Address class
     public static class Address {
         private String line;
         private String city;
