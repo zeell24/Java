@@ -1,8 +1,21 @@
-// > javac MiniBank.java Account.java Customer.java Command.java CommandParser.java StatementFormatter.java TransactionType.java Validator.java
+// > javac MiniBank.java Account.java Customer.java Command.java CommandParser.java StatementFormatter.java TransactionType.java Validator.java SavingAccount.java CurrentAccount.java FixedDepositAccount.java Transactable.java InterestBearing.java WithdrawRule.java Premium.java
 // > java MiniBank.java
+
+// > javac -d classFiles MiniBank.java model/*.java util/*.java service/*.java
+// > java -jar MiniBank.jar
 
 package clg.Bank;
 import java.util.Scanner;
+
+import clg.Bank.model.Account;
+import clg.Bank.model.CurrentAccount;
+import clg.Bank.model.FixedDepositAccount;
+import clg.Bank.model.Premium;
+import clg.Bank.model.SavingAccount;
+import clg.Bank.model.WithdrawRule;
+import clg.Bank.util.Validator;
+
+import static clg.Bank.util.Validator.isValidMobile;
 
 record BankInfo(String name , String branch){}
 
@@ -29,7 +42,7 @@ public class MiniBank {
                 + (Validator.isValidMobile("9988776655") ? "Valid" : "Invalid"));
 
         System.out.println("Mobile 998877665 : "
-                + (Validator.isValidMobile("998877665") ? "Valid" : "Invalid"));
+                + (isValidMobile("998877665") ? "Valid" : "Invalid"));
 
         System.out.println("Email abc@gmail.com : "
                 + (Validator.isValidEmail("abc@gmail.com") ? "Valid" : "Invalid"));
@@ -50,34 +63,90 @@ public class MiniBank {
                 + (Validator.isValidIfsc("HDFC567") ? "Valid" : "Invalid"));
 
         //p2
-        Account acc[] = new Account[2];
+        // Account acc[] = new Account[2];
 
-        acc[0] = new Account("Zeel", 25000);
-        acc[1] = new Account("Diya");
+        // acc[0] = new Account("Zeel", 25000);
+        // acc[1] = new Account("Diya");
 
-        System.out.println("Withdrawing 200 from acc[0] ...");
-        acc[0].withdraw(200);
-        System.out.println("Depositing 1000 into acc[1] ...");
-        acc[1].deposit(1000);
+        // System.out.println("Withdrawing 200 from acc[0] ...");
+        // acc[0].withdraw(200);
+        // System.out.println("Depositing 1000 into acc[1] ...");
+        // acc[1].deposit(1000);
 
-        System.out.println("Checking...");
-        for(Account account : acc)
-        {
-            //p2
-            // System.out.println("---");
-            // System.out.println("Account number : " + account.getAccountNumber());
-            // System.out.println("Acount holder name : " + account.getOwnerName());
-            // System.out.println("Account Balance : " + account.getBalance());
+        // System.out.println("Checking...");
+        // for(Account account : acc)
+        // {
+        //     //p2
+        //     // System.out.println("---");
+        //     // System.out.println("Account number : " + account.getAccountNumber());
+        //     // System.out.println("Acount holder name : " + account.getOwnerName());
+        //     // System.out.println("Account Balance : " + account.getBalance());
 
-            //p3
-            System.out.println(account);
-        }
+        //     //p3
+        //     System.out.println(account);
+        // }
 
         //p3
-        System.out.println("\nChecking if acc[0] and acc[1] is equal : " + acc[0].equals(acc[1]));
+        // System.out.println("\nChecking if acc[0] and acc[1] is equal : " + acc[0].equals(acc[1]));
 
-        if(acc[0] instanceof Account)
-            System.out.println("acc[0] is an Account");
+        // if(acc[0] instanceof Account)
+        //     System.out.println("acc[0] is an Account");
+
+        //p5
+        Account[] accounts = {
+            new SavingAccount("Zeel", 50000, 5000),
+            new CurrentAccount("xyz", 20500, 5000),
+            new FixedDepositAccount("abc", 30000)
+        };
+
+
+        System.out.println("----------------");
+        for(Account acc : accounts)
+        {
+            System.out.println(acc);
+            double rate = acc.interestRate();
+            System.out.println("Interest rate: " + rate);
+
+
+            if (acc instanceof FixedDepositAccount fd)
+            {
+                System.out.println("Note: This is a Fixed Deposit account.");
+            }
+
+            if(acc instanceof Premium)
+            {
+                System.out.println("This is a Premium Account.");
+            }
+
+            System.out.println("");
+        }
+
+        // P6: Withdraw Rule
+
+        WithdrawRule rule = new WithdrawRule()
+        {
+            public boolean allow(Account account, long amount)
+            {
+                return account.getBalance() >= amount;
+            }
+        };
+
+        System.out.println("-------- Withdraw Rules --------");
+
+        System.out.println(
+            "Anonymous Rule : " +
+            rule.allow(accounts[0], 5000)
+        );
+
+        WithdrawRule lambdaRule =
+            (account, amount) -> account.getBalance() >= amount;
+
+        System.out.println(
+            "Lambda Rule : " +
+            lambdaRule.allow(accounts[1], 25000)
+        );
+
+        System.out.println("----------------");
 
         //p1
         int choice = 0;
