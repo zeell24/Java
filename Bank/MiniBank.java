@@ -108,7 +108,7 @@ public class MiniBank {
             System.out.println("Interest rate: " + rate);
 
 
-            if (acc instanceof FixedDepositAccount fd)
+            if (acc instanceof FixedDepositAccount)
             {
                 System.out.println("Note: This is a Fixed Deposit account.");
             }
