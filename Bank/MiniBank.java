@@ -1,8 +1,5 @@
-// > javac MiniBank.java Account.java Customer.java Command.java CommandParser.java StatementFormatter.java TransactionType.java Validator.java SavingAccount.java CurrentAccount.java FixedDepositAccount.java Transactable.java InterestBearing.java WithdrawRule.java Premium.java
-// > java MiniBank.java
-
-// > javac -d classFiles MiniBank.java model/*.java util/*.java service/*.java
-// > java -jar MiniBank.jar
+// javac -d classFiles MiniBank.java model\*.java model\annotation\*.java util\*.java service\*.java
+// java -cp classFiles clg.Bank.MiniBank
 
 package clg.Bank;
 import java.util.Scanner;
@@ -14,10 +11,24 @@ import clg.Bank.model.Premium;
 import clg.Bank.model.SavingAccount;
 import clg.Bank.model.WithdrawRule;
 import clg.Bank.util.Validator;
+import clg.Bank.util.AnnotationValidator;
+import clg.Bank.exception.BankException;
+import clg.Bank.exception.InsufficientFundsException;
+import clg.Bank.exception.AccountNotFoundException;
+import clg.Bank.exception.InvalidAmountException;
 
 import static clg.Bank.util.Validator.isValidMobile;
 
 record BankInfo(String name , String branch){}
+
+class BankSession implements AutoCloseable
+{
+    @Override
+    public void close()
+    {
+        System.out.println("Bank session closed.");
+    }
+}
 
 public class MiniBank {
 
@@ -145,6 +156,83 @@ public class MiniBank {
             "Lambda Rule : " +
             lambdaRule.allow(accounts[1], 25000)
         );
+
+        System.out.println("----------------");
+
+        // P7: Annotation Validation
+        System.out.println("-------- Annotation Validation --------");
+
+        String[] errors = AnnotationValidator.validate(
+            new SavingAccount("Test", -500, 100)
+        );
+
+        for(String error : errors)
+        {
+            System.out.println(error);
+        }
+
+        System.out.println("----------------");
+
+        // P8: Exception Handling
+        //transfer testing
+        try
+        {
+            accounts[0].transfer(accounts[1], 5000);
+            System.out.println("Transfer successful.");
+        }
+        catch(BankException e)
+        {
+            System.out.println("Transfer failed: " + e.getMessage());
+        }
+
+        //acc not found test
+        try
+        {
+            accounts[0].transfer(null, 1000);
+        }
+        catch(AccountNotFoundException e)
+        {
+            System.out.println("Transfer failed: " + e.getMessage());
+        }
+        catch(BankException e)
+        {
+            System.out.println("Bank error: " + e.getMessage());
+        }
+        System.out.println("-------- Exception Handling --------");
+
+        try(BankSession session = new BankSession())
+        {
+            try
+            {
+                accounts[0].withdraw(100000);
+            }
+            catch(InsufficientFundsException e)
+            {
+                System.out.println("Withdrawal failed: " + e.getMessage());
+                System.out.println("Shortfall: " + e.getShortfall());
+            }
+            catch(InvalidAmountException e)
+            {
+                System.out.println("Invalid amount: " + e.getMessage());
+            }
+            finally
+            {
+                System.out.println("Withdrawal operation completed.");
+            }
+
+            try
+            {
+                accounts[0].deposit(-100);
+            }
+            catch(InvalidAmountException e)
+            {
+                System.out.println("Deposit failed: " + e.getMessage());
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Bank session error: " + e.getMessage());
+        }
 
         System.out.println("----------------");
 

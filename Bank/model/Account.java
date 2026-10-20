@@ -1,14 +1,25 @@
 package clg.Bank.model;
+import clg.Bank.model.annotation.Id;
+import clg.Bank.model.annotation.Positive;
+import clg.Bank.exception.InsufficientFundsException;
+import clg.Bank.exception.InvalidAmountException;
+import clg.Bank.exception.BankException;
+import clg.Bank.exception.AccountNotFoundException;
 
 public abstract class Account implements Transactable, InterestBearing
 {
-    
+    @Id
     private final String accountNumber;
+
     private String ownerName;
+    
+    @Positive 
     private long balance;
+    
     private boolean active;
 
     private static int counter = 0;
+    
 
     Account(String ownerName , long balance)
     {
@@ -32,10 +43,14 @@ public abstract class Account implements Transactable, InterestBearing
     }
 
     @Override 
-    public void deposit(long amount)
+    public void deposit(long amount) throws InvalidAmountException
     {
-        if(amount > 0)
-            balance += amount;
+        if(amount <= 0)
+        {
+            throw new InvalidAmountException("Deposit amount must be positive.");
+        }
+
+        balance += amount;
     }
     
     public abstract boolean canwithdraw(long amount);
@@ -44,14 +59,51 @@ public abstract class Account implements Transactable, InterestBearing
 
     @Override
     public boolean withdraw(long amount)
+        throws InsufficientFundsException, InvalidAmountException
     {
-        if(amount > 0 && canwithdraw(amount))
+        if(amount <= 0)
         {
-            balance -= amount;
-            return true;
+            throw new InvalidAmountException("Withdrawal amount must be positive.");
         }
 
-        return false;
+        if(!canwithdraw(amount))
+        {
+            long shortfall = amount - balance;
+            throw new InsufficientFundsException("Insufficient funds.", shortfall);
+        }
+
+        balance -= amount;
+        return true;
+    }
+
+    public void transfer(Account to, long amount) throws BankException
+    {
+        try
+        {
+            if(to == null)
+            {
+                throw new AccountNotFoundException("Target account not found.");
+            }
+
+            this.withdraw(amount);
+            try
+            {
+                to.deposit(amount);
+            }
+            catch(BankException e)
+            {
+                this.deposit(amount);
+                throw e;
+            }
+        }
+        catch(BankException e)
+        {
+            throw e;
+        }
+        finally
+        {
+            System.out.println("Transfer attempt completed.");
+        }
     }
 
     public String getAccountNumber() 
