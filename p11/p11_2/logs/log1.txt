@@ -1,0 +1,4 @@
+INFO Server started successfully
+INFO Zeel logged into her account
+ERROR Unable to load user profile
+INFO Dashboard opened successfully

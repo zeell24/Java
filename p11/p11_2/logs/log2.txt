@@ -1,0 +1,4 @@
+INFO File upload started
+ERROR File upload failed
+INFO Retrying file upload
+ERROR Requested file could not be found

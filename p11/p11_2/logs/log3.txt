@@ -1,0 +1,4 @@
+INFO Database connected successfully
+INFO New user registered
+WARNING Login attempt failed
+INFO User logged out successfully
