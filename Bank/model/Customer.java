@@ -1,6 +1,8 @@
 package clg.Bank.model;
+import java.io.Serializable;
 
-public class Customer implements Cloneable{
+public class Customer implements Cloneable, Serializable
+{
     
     private String name;
     private String email;
@@ -61,7 +63,7 @@ public class Customer implements Cloneable{
     }
 
     //customer Address class
-    public static class Address {
+    public static class Address implements Serializable {
         private String line;
         private String city;
         private String pincode;

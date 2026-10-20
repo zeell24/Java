@@ -5,8 +5,9 @@ import clg.Bank.exception.InsufficientFundsException;
 import clg.Bank.exception.InvalidAmountException;
 import clg.Bank.exception.BankException;
 import clg.Bank.exception.AccountNotFoundException;
+import java.io.Serializable;
 
-public abstract class Account implements Transactable, InterestBearing
+public abstract class Account implements Transactable, InterestBearing, Serializable, Comparable<Account>
 {
     @Id
     private final String accountNumber;
@@ -43,7 +44,7 @@ public abstract class Account implements Transactable, InterestBearing
     }
 
     @Override 
-    public void deposit(long amount) throws InvalidAmountException
+    public synchronized void deposit(long amount) throws InvalidAmountException
     {
         if(amount <= 0)
         {
@@ -58,7 +59,7 @@ public abstract class Account implements Transactable, InterestBearing
     public abstract double interestRate();
 
     @Override
-    public boolean withdraw(long amount)
+    public synchronized boolean withdraw(long amount)
         throws InsufficientFundsException, InvalidAmountException
     {
         if(amount <= 0)
@@ -127,6 +128,12 @@ public abstract class Account implements Transactable, InterestBearing
     }
 
     @Override
+    public int compareTo(Account other)
+    {
+        return this.accountNumber.compareTo(other.accountNumber);
+    }
+
+    @Override
     public String toString()
     {
         return accountNumber + " | " + ownerName + " | " + balance ;
@@ -152,4 +159,5 @@ public abstract class Account implements Transactable, InterestBearing
     {
         return accountNumber.hashCode();
     }
+    
 }
